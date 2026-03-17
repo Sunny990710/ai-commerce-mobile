@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../constants/mock_data.dart';
 import '../models/product.dart';
+import '../widgets/product_card.dart';
 import 'closet_item_detail_screen.dart';
 import 'clothing_search_screen.dart';
+import 'product_detail_screen.dart';
 
 class ClosetScreen extends StatefulWidget {
   final Set<String> wishIds;
   final void Function(Product) onToggleWish;
-  final VoidCallback? onGoToChat;
+  final void Function(String? prompt)? onGoToChat;
   final VoidCallback? onGoToMy;
   final VoidCallback? onBack;
 
@@ -109,6 +112,10 @@ class _ClosetScreenState extends State<ClosetScreen> {
               _buildCoordiView()
             else
               _buildItemGrid(),
+            if (widget.wishIds.isNotEmpty) ...[
+              const SizedBox(height: 28),
+              _buildWishlistSection(),
+            ],
             const SizedBox(height: 100),
           ],
         ),
@@ -258,10 +265,14 @@ class _ClosetScreenState extends State<ClosetScreen> {
           Text('서울 · 맑음', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
           const SizedBox(width: 16),
           Expanded(
-            child: Text(
-              '가벼운 아우터 추천',
-              style: TextStyle(fontSize: 13, color: Colors.blue[700], fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
+            child: GestureDetector(
+              onTap: () => widget.onGoToChat?.call('가벼운 아우터 추천'),
+              behavior: HitTestBehavior.opaque,
+              child: Text(
+                '가벼운 아우터 추천',
+                style: TextStyle(fontSize: 13, color: Colors.blue[700], fontWeight: FontWeight.w500, decoration: TextDecoration.underline),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ],
@@ -710,6 +721,51 @@ class _ClosetScreenState extends State<ClosetScreen> {
           },
         );
       },
+    );
+  }
+
+  Widget _buildWishlistSection() {
+    final wishProducts = mockProducts.where((p) => widget.wishIds.contains(p.id)).toList();
+    if (wishProducts.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '위시리스트',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+        ),
+        const SizedBox(height: 12),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 8,
+            childAspectRatio: 0.58,
+          ),
+          itemCount: wishProducts.length,
+          itemBuilder: (_, i) {
+            final p = wishProducts[i];
+            return ProductCard(
+              product: p,
+              isWished: true,
+              colorOptions: productColorOptions[p.id],
+              onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ProductDetailScreen(
+                        product: p,
+                        wishIds: widget.wishIds,
+                        onToggleWish: widget.onToggleWish,
+                      ),
+                    ),
+                  ),
+              onWish: () => widget.onToggleWish(p),
+            );
+          },
+        ),
+      ],
     );
   }
 }

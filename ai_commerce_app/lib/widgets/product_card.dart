@@ -5,6 +5,7 @@ class ProductCard extends StatelessWidget {
   final Product product;
   final bool isBestPick;
   final bool isWished;
+  final List<int>? colorOptions;
   final VoidCallback? onTap;
   final VoidCallback? onWish;
 
@@ -13,6 +14,7 @@ class ProductCard extends StatelessWidget {
     required this.product,
     this.isBestPick = false,
     this.isWished = false,
+    this.colorOptions,
     this.onTap,
     this.onWish,
   });
@@ -73,6 +75,23 @@ class ProductCard extends StatelessWidget {
                 ),
             ],
           ),
+          if (colorOptions != null && colorOptions!.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Row(
+              children: colorOptions!.map((hex) => Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: Color(hex),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey[300]!, width: 0.5),
+                  ),
+                ),
+              )).toList(),
+            ),
+          ],
           const SizedBox(height: 4),
           Text(product.brand, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey[700])),
           Text(product.name, style: const TextStyle(fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),

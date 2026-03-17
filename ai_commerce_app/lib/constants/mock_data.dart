@@ -15,6 +15,21 @@ final List<Product> mockProducts = [
   Product(id: '103', brand: '스파오', name: '밴딩 와이드 팬츠', price: 39900, originalPrice: 49000, tag: '가성비', category: '바지', keywords: '밴딩 와이드팬츠 캐주얼 출근룩', image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80', stock: 8),
 ];
 
+/// 상품별 색상 옵션 (hex)
+final Map<String, List<int>> productColorOptions = {
+  '1': [0xFFE8F4FC, 0xFF1E3A5F, 0xFF8B7355],
+  '2': [0xFFFFF8E7, 0xFFD4A574, 0xFF2C1810],
+  '3': [0xFF4A5568, 0xFF2D3748, 0xFFE2E8F0],
+  '4': [0xFFF7FAFC, 0xFF718096, 0xFF2D3748],
+  '5': [0xFFFED7E2, 0xFFB83280, 0xFF1A202C],
+  '6': [0xFF2D3748, 0xFF718096, 0xFFE2E8F0],
+  '7': [0xFFFC8181, 0xFF2D3748, 0xFFE2E8F0],
+  '8': [0xFF2F8558, 0xFF2D3748, 0xFFE2E8F0],
+  '101': [0xFFE8E8E8, 0xFF4A5568, 0xFF2D3748],
+  '102': [0xFF2D3748, 0xFF718096, 0xFFE2E8F0],
+  '103': [0xFF2D3748, 0xFF4A5568, 0xFFA0AEC0],
+};
+
 final List<String> quickChips = [
   '이번 주말 데이트룩 추천해 줘',
   '요즘 유행하는 와이드 팬츠 찾아줘',

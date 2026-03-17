@@ -150,6 +150,7 @@ class _MainScreenState extends State<MainScreen> {
           _currentIndex = 2;
         }),
         onGoToMy: () => setState(() => _currentIndex = 4),
+        onGoToWishlist: () => setState(() => _currentIndex = 3),
       ),
       ExploreScreen(
         onBack: () => setState(() => _currentIndex = 0),
@@ -160,6 +161,7 @@ class _MainScreenState extends State<MainScreen> {
         wishIds: _wishIds,
         onToggleWish: _toggleWish,
         initialPrompt: _chatInitialPrompt,
+        onPromptSent: () => setState(() => _chatInitialPrompt = null),
         onGoToCloset: () => setState(() => _currentIndex = 3),
         onGoToCoordination: () => setState(() => _currentIndex = 1),
         onBack: () => setState(() => _currentIndex = 1),
@@ -167,7 +169,10 @@ class _MainScreenState extends State<MainScreen> {
       ClosetScreen(
         wishIds: _wishIds,
         onToggleWish: _toggleWish,
-        onGoToChat: () => setState(() => _currentIndex = 2),
+        onGoToChat: (prompt) => setState(() {
+          if (prompt != null) _chatInitialPrompt = prompt;
+          _currentIndex = 2;
+        }),
         onGoToMy: () => setState(() => _currentIndex = 4),
         onBack: () => setState(() => _currentIndex = 2),
       ),

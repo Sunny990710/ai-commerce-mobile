@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../constants/mock_data.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
+import '../utils/wishlist_popup.dart';
 import '../widgets/product_card.dart';
 import 'item_select_for_advice_screen.dart';
 import 'my_style_profile_screen.dart';
@@ -12,6 +13,7 @@ class ChatScreen extends StatefulWidget {
   final Set<String> wishIds;
   final void Function(Product) onToggleWish;
   final String? initialPrompt;
+  final VoidCallback? onPromptSent;
   final VoidCallback? onGoToCloset;
   final VoidCallback? onGoToCoordination;
   final VoidCallback? onBack;
@@ -21,6 +23,7 @@ class ChatScreen extends StatefulWidget {
     required this.wishIds,
     required this.onToggleWish,
     this.initialPrompt,
+    this.onPromptSent,
     this.onGoToCloset,
     this.onGoToCoordination,
     this.onBack,
@@ -36,11 +39,23 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<ChatMessage> _messages = [];
   bool _isLoading = false;
 
+  void _handleInitialPrompt() {
+    final prompt = widget.initialPrompt;
+    if (prompt != null && prompt.trim().isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _send(prompt.trim());
+        widget.onPromptSent?.call();
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     if (widget.initialPrompt != null && widget.initialPrompt!.isNotEmpty) {
       _controller.text = widget.initialPrompt!;
+      _handleInitialPrompt();
     }
     _messages.add(ChatMessage(
       role: 'assistant',
@@ -103,6 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
         widget.initialPrompt != oldWidget.initialPrompt &&
         widget.initialPrompt!.isNotEmpty) {
       _controller.text = widget.initialPrompt!;
+      _handleInitialPrompt();
     }
   }
 
@@ -542,7 +558,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 36),
                         child: SizedBox(
-                          height: 235,
+                          height: 250,
                           width: double.infinity,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
@@ -552,15 +568,22 @@ class _ChatScreenState extends State<ChatScreen> {
                             itemBuilder: (_, j) {
                               final p = msg.products![j];
                               return SizedBox(
-                                height: 230,
+                                height: 245,
                                 width: 140,
                                 child: ClipRect(
                                   child: ProductCard(
                                     product: p,
                                     isBestPick: j == 0,
                                     isWished: widget.wishIds.contains(p.id),
+                                    colorOptions: productColorOptions[p.id],
                                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(product: p, wishIds: widget.wishIds, onToggleWish: widget.onToggleWish))),
-                                    onWish: () => widget.onToggleWish(p),
+                                    onWish: () {
+                                      final wasAdding = !widget.wishIds.contains(p.id);
+                                      widget.onToggleWish(p);
+                                      if (wasAdding && widget.onGoToCloset != null) {
+                                        showWishlistAddedPopup(context, widget.onGoToCloset!);
+                                      }
+                                    },
                                   ),
                                 ),
                               );
