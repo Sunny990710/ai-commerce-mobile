@@ -1,0 +1,9 @@
+# Windows 예약 이름 - Git에서 제외
+nul
+NUL
+con
+CON
+prn
+PRN
+aux
+AUX
