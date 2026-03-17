@@ -28,7 +28,7 @@ class ProductCard extends StatelessWidget {
           Stack(
             children: [
               AspectRatio(
-                aspectRatio: 3 / 3.5,
+                aspectRatio: 3 / 3.2,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(

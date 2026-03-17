@@ -9,6 +9,10 @@ final List<Product> mockProducts = [
   Product(id: '6', brand: 'SPAO', name: 'Relaxed Fit Hoodie', price: 45900, originalPrice: 59900, tag: '가성비', category: '상의', keywords: '후디 맨투맨 캐주얼', image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80', stock: 15),
   Product(id: '7', brand: 'New Balance', name: 'Fresh Foam Running Shoes', price: 129000, originalPrice: 159000, tag: '인기', category: '신발', keywords: '운동화 러닝 스니커즈', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80', stock: 6),
   Product(id: '8', brand: 'WHO.A.U', name: 'Eco Cotton Cargo Pants', price: 79900, originalPrice: 99000, tag: '친환경', category: '바지', keywords: '카고팬츠 면 와이드', image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80', stock: 4),
+  // 환절기 레이어드 추천용
+  Product(id: '101', brand: '자라', name: '스트라이프 오버사이즈 티셔츠', price: 29900, originalPrice: 39000, tag: '환절기 추천', category: '상의', keywords: '스트라이프 티셔츠 오버사이즈 레이어드', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80', stock: 10),
+  Product(id: '102', brand: '유니클로', name: '경량 패딩', price: 49900, originalPrice: 69000, tag: '베스트셀러', category: '아우터', keywords: '패딩 경량 환절기 레이어드', image: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?auto=format&fit=crop&w=800&q=80', stock: 15),
+  Product(id: '103', brand: '스파오', name: '밴딩 와이드 팬츠', price: 39900, originalPrice: 49000, tag: '가성비', category: '바지', keywords: '밴딩 와이드팬츠 캐주얼 출근룩', image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80', stock: 8),
 ];
 
 final List<String> quickChips = [

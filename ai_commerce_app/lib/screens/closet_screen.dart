@@ -9,8 +9,9 @@ class ClosetScreen extends StatefulWidget {
   final void Function(Product) onToggleWish;
   final VoidCallback? onGoToChat;
   final VoidCallback? onGoToMy;
+  final VoidCallback? onBack;
 
-  const ClosetScreen({super.key, required this.wishIds, required this.onToggleWish, this.onGoToChat, this.onGoToMy});
+  const ClosetScreen({super.key, required this.wishIds, required this.onToggleWish, this.onGoToChat, this.onGoToMy, this.onBack});
 
   @override
   State<ClosetScreen> createState() => _ClosetScreenState();
@@ -69,7 +70,8 @@ class _ClosetScreenState extends State<ClosetScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text('옷장', style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black87)),
-        centerTitle: false,
+        centerTitle: true,
+        leading: widget.onBack != null ? IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.grey[700], size: 20), onPressed: widget.onBack) : null,
         actions: [
           if (widget.onGoToMy != null)
             IconButton(

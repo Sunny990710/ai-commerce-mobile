@@ -151,19 +151,21 @@ class _MainScreenState extends State<MainScreen> {
         }),
         onGoToMy: () => setState(() => _currentIndex = 4),
       ),
-      ExploreScreen(),
+      ExploreScreen(onBack: () => setState(() => _currentIndex = 0)),
       ChatScreen(
         wishIds: _wishIds,
         onToggleWish: _toggleWish,
         initialPrompt: _chatInitialPrompt,
         onGoToCloset: () => setState(() => _currentIndex = 3),
         onGoToCoordination: () => setState(() => _currentIndex = 1),
+        onBack: () => setState(() => _currentIndex = 1),
       ),
       ClosetScreen(
         wishIds: _wishIds,
         onToggleWish: _toggleWish,
         onGoToChat: () => setState(() => _currentIndex = 2),
         onGoToMy: () => setState(() => _currentIndex = 4),
+        onBack: () => setState(() => _currentIndex = 2),
       ),
       MyScreen(wishIds: _wishIds, onToggleWish: _toggleWish, onResetOnboarding: widget.onResetOnboarding),
     ];
@@ -178,7 +180,7 @@ class _MainScreenState extends State<MainScreen> {
           NavigationDestination(icon: Icon(Icons.explore_outlined), selectedIcon: Icon(Icons.explore), label: '탐색'),
           NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: '대화'),
           NavigationDestination(icon: Icon(Icons.checkroom_outlined), selectedIcon: Icon(Icons.checkroom), label: '옷장'),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: '마이'),
+          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: '프로필'),
         ],
       ),
     );

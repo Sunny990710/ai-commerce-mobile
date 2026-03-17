@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../models/product.dart';
 import 'my_style_profile_screen.dart';
-import 'wishlist_screen.dart';
 
 class MyScreen extends StatelessWidget {
   final Set<String> wishIds;
@@ -17,7 +16,7 @@ class MyScreen extends StatelessWidget {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('마이', style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black87)),
+        title: const Text('프로필', style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black87)),
         centerTitle: false,
         elevation: 0,
       ),
@@ -52,15 +51,6 @@ class MyScreen extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('온보딩 화면으로 이동했어요')));
                 }
               },
-            ),
-          ),
-          const SizedBox(height: 8),
-          Card(
-            child: ListTile(
-              leading: Icon(Icons.favorite_border, color: Colors.red[300]),
-              title: const Text('저장한 상품'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => WishlistScreen(wishIds: wishIds, onToggleWish: onToggleWish))),
             ),
           ),
           const SizedBox(height: 8),

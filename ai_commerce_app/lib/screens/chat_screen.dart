@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/mock_data.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
 import '../widgets/product_card.dart';
@@ -13,6 +14,7 @@ class ChatScreen extends StatefulWidget {
   final String? initialPrompt;
   final VoidCallback? onGoToCloset;
   final VoidCallback? onGoToCoordination;
+  final VoidCallback? onBack;
 
   const ChatScreen({
     super.key,
@@ -21,6 +23,7 @@ class ChatScreen extends StatefulWidget {
     this.initialPrompt,
     this.onGoToCloset,
     this.onGoToCoordination,
+    this.onBack,
   });
 
   @override
@@ -46,6 +49,18 @@ class _ChatScreenState extends State<ChatScreen> {
     ));
   }
 
+  static const _todayOutfitContent = '''오늘 날씨에 맞는 환절기 레이어드 아이템 추천드립니다.
+
+1. 자라 스트라이프 오버사이즈 티셔츠: 편안하면서도 스타일리시하고, 안에 레이어드 하기도 좋아요.
+2. 유니클로 경량 패딩: 지금 날씨에 딱 걸치기 좋은 무게감이여서 가벼운 외출에 좋아요.
+3. 스파오 밴딩 와이드 팬츠: 깔끔하고 편안해서 캐주얼/출근룩 모두 가능해요.''';
+
+  static const _todayOutfitRelatedChips = [
+    '스트라이프 말고 무지 티셔츠 중에 추천해줘',
+    '경량 패딩 대신 가디건은?',
+    '팬츠 색상 다른 거 있어?',
+  ];
+
   Future<void> _send(String text) async {
     if (text.trim().isEmpty || _isLoading) return;
     final userMsg = text.trim();
@@ -55,6 +70,23 @@ class _ChatScreenState extends State<ChatScreen> {
       _isLoading = true;
     });
     _scrollToBottom();
+
+    if (userMsg == '오늘 뭐입지?') {
+      final ids = ['101', '102', '103'];
+      var products = ids.map((id) => mockProducts.where((p) => p.id == id).firstOrNull).whereType<Product>().toList();
+      if (products.isEmpty) products = mockProducts.take(3).toList();
+      setState(() {
+        _messages.add(ChatMessage(
+          role: 'assistant',
+          content: _todayOutfitContent,
+          products: products,
+          relatedChips: _todayOutfitRelatedChips,
+        ));
+        _isLoading = false;
+      });
+      _scrollToBottom();
+      return;
+    }
 
     final res = await ApiService.aiSearch(userMsg);
     setState(() {
@@ -170,14 +202,29 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('대화', style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black87)),
-        centerTitle: false,
+        centerTitle: true,
         elevation: 0,
-        leading: _showWelcomeView
-            ? null
-            : IconButton(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              IconButton(
                 icon: Icon(Icons.arrow_back_ios, color: Colors.grey[700], size: 20),
-                onPressed: _resetToWelcome,
+                onPressed: _showWelcomeView ? (widget.onBack ?? () {}) : _resetToWelcome,
+                style: IconButton.styleFrom(
+                  padding: const EdgeInsets.all(8),
+                  minimumSize: const Size(36, 36),
+                ),
               ),
+              Icon(Icons.wb_sunny_outlined, size: 18, color: Colors.amber[700]),
+              const SizedBox(width: 2),
+              Text('맑음 24°', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.grey[800])),
+            ],
+          ),
+        ),
+        leadingWidth: 135,
         actions: [
           IconButton(
             icon: Icon(Icons.menu, color: Colors.grey[700]),
@@ -324,13 +371,52 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  static const _guideChips = [
+    '오늘 뭐입지?',
+    '비슷한 스타일 더 보여줘',
+    '요즘 유행하는 아이템',
+    '내 옷장 분석해줘',
+  ];
+
   Widget _buildInputBar() {
     const skyBlue = Color(0xFF64B5F6);
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       color: Colors.grey[50],
       child: SafeArea(
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 40,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: _guideChips.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                itemBuilder: (_, i) {
+                  final label = _guideChips[i];
+                  return GestureDetector(
+                    onTap: () => _send(label),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.grey[300]!, width: 0.5),
+                      ),
+                      child: Center(
+                        child: Text(
+                          label,
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.black87),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             GestureDetector(
@@ -366,7 +452,43 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: const Icon(Icons.arrow_upward, size: 20),
             ),
           ],
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildRelatedChips(List<String> chips) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!, width: 0.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('추가 질문하기', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[800])),
+          const SizedBox(height: 10),
+          ...chips.map((q) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: GestureDetector(
+              onTap: () => _send(q),
+              behavior: HitTestBehavior.opaque,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.arrow_forward_ios, size: 12, color: Colors.grey[500]),
+                  const SizedBox(width: 6),
+                  Expanded(child: Text(q, style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.4))),
+                ],
+              ),
+            ),
+          )),
+        ],
       ),
     );
   }
@@ -410,53 +532,50 @@ class _ChatScreenState extends State<ChatScreen> {
                         CircleAvatar(radius: 14, backgroundColor: Colors.purple[100], child: Icon(Icons.auto_awesome, size: 16, color: Colors.purple[700])),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                child: Text(msg.content, style: const TextStyle(fontSize: 14)),
-                              ),
-                              if (msg.products != null && msg.products!.isNotEmpty) ...[
-                                SizedBox(
-                                    height: 220,
-                                    child: ListView.separated(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: msg.products!.length,
-                                      separatorBuilder: (_, __) => const SizedBox(width: 12),
-                                      itemBuilder: (_, j) {
-                                        final p = msg.products![j];
-                                        return SizedBox(
-                                          width: 140,
-                                          child: ProductCard(
-                                            product: p,
-                                            isBestPick: j == 0,
-                                            isWished: widget.wishIds.contains(p.id),
-                                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(product: p, wishIds: widget.wishIds, onToggleWish: widget.onToggleWish))),
-                                            onWish: () => widget.onToggleWish(p),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Wrap(
-                                    spacing: 6,
-                                    runSpacing: 6,
-                                    children: ['더 저렴한 것 보여줘', '비슷한 스타일 더 보여줘', '다른 브랜드'].map((chip) => ActionChip(
-                                      label: Text(chip, style: const TextStyle(fontSize: 11)),
-                                      onPressed: () => _send(chip),
-                                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      padding: EdgeInsets.zero,
-                                      visualDensity: VisualDensity.compact,
-                                    )).toList(),
-                                  ),
-                                ],
-                            ],
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            child: Text(msg.content, style: const TextStyle(fontSize: 14)),
                           ),
                         ),
                       ],
                     ),
+                    if (msg.products != null && msg.products!.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 36),
+                        child: SizedBox(
+                          height: 235,
+                          width: double.infinity,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: msg.products!.length,
+                            separatorBuilder: (_, __) => const SizedBox(width: 12),
+                            itemBuilder: (_, j) {
+                              final p = msg.products![j];
+                              return SizedBox(
+                                height: 230,
+                                width: 140,
+                                child: ClipRect(
+                                  child: ProductCard(
+                                    product: p,
+                                    isBestPick: j == 0,
+                                    isWished: widget.wishIds.contains(p.id),
+                                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailScreen(product: p, wishIds: widget.wishIds, onToggleWish: widget.onToggleWish))),
+                                    onWish: () => widget.onToggleWish(p),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    if (msg.relatedChips != null && msg.relatedChips!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 36),
+                        child: _buildRelatedChips(msg.relatedChips!),
+                      ),
                     const SizedBox(height: 16),
                   ],
                 );
@@ -469,7 +588,8 @@ class ChatMessage {
   final String role;
   final String content;
   final List<Product>? products;
-  ChatMessage({required this.role, required this.content, this.products});
+  final List<String>? relatedChips;
+  ChatMessage({required this.role, required this.content, this.products, this.relatedChips});
 }
 
 class _AddItemOption extends StatelessWidget {

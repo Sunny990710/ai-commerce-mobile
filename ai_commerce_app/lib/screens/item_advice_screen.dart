@@ -369,7 +369,7 @@ class ItemAdviceScreen extends StatelessWidget {
               Icon(Icons.checkroom_outlined, size: 22, color: Colors.blue[700]),
               const SizedBox(width: 8),
               const Text(
-                '내 옷장과 얼마나 맞을까',
+                '내 옷장과 얼마나 핏할까',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
               ),
               const Spacer(),

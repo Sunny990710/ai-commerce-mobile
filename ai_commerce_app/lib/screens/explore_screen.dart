@@ -5,7 +5,9 @@ import 'onboarding/onboarding_flow.dart';
 
 /// 나와 같은 체형/피부톤을 가진 사람들의 옷차림을 보여주는 무드보드
 class ExploreScreen extends StatefulWidget {
-  const ExploreScreen({super.key});
+  final VoidCallback? onBack;
+
+  const ExploreScreen({super.key, this.onBack});
 
   @override
   State<ExploreScreen> createState() => _ExploreScreenState();
@@ -62,8 +64,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: const Text('탐색', style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black87)),
-          centerTitle: false,
+          centerTitle: true,
           elevation: 0,
+          leading: widget.onBack != null ? IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.grey[700], size: 20), onPressed: widget.onBack) : null,
         ),
         body: const Center(child: CircularProgressIndicator()),
       );
@@ -83,8 +86,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('탐색', style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black87)),
-        centerTitle: false,
+        centerTitle: true,
         elevation: 0,
+        leading: widget.onBack != null ? IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.grey[700], size: 20), onPressed: widget.onBack) : null,
       ),
       body: CustomScrollView(
         slivers: [
