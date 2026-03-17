@@ -49,13 +49,13 @@ class _ChatScreenState extends State<ChatScreen> {
     ));
   }
 
-  static const _todayOutfitContent = '''오늘 날씨에 맞는 환절기 레이어드 아이템 추천드립니다.
+  static const _trendyItemsContent = '''요즘 유행하는 꾸안꾸 스타일 아이템 추천드립니다.
 
 1. 자라 스트라이프 오버사이즈 티셔츠: 편안하면서도 스타일리시하고, 안에 레이어드 하기도 좋아요.
-2. 유니클로 경량 패딩: 지금 날씨에 딱 걸치기 좋은 무게감이여서 가벼운 외출에 좋아요.
-3. 스파오 밴딩 와이드 팬츠: 깔끔하고 편안해서 캐주얼/출근룩 모두 가능해요.''';
+2. 유니클로 경량 패딩: 지금 날씨에 딱 걸치기 좋은 무게감이고 여성스러운 실루엣이어서 너무 꾸민 느낌 없이 가벼운 외출에 좋아요.
+3. 스파오 밴딩 와이드 팬츠: 깔끔하고 편안한데 트렌디하게 보이는 캐주얼 룩이에요.''';
 
-  static const _todayOutfitRelatedChips = [
+  static const _trendyItemsRelatedChips = [
     '스트라이프 말고 무지 티셔츠 중에 추천해줘',
     '경량 패딩 대신 가디건은?',
     '팬츠 색상 다른 거 있어?',
@@ -71,16 +71,16 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     _scrollToBottom();
 
-    if (userMsg == '오늘 뭐입지?') {
+    if (userMsg == '요즘 유행하는 아이템') {
       final ids = ['101', '102', '103'];
       var products = ids.map((id) => mockProducts.where((p) => p.id == id).firstOrNull).whereType<Product>().toList();
       if (products.isEmpty) products = mockProducts.take(3).toList();
       setState(() {
         _messages.add(ChatMessage(
           role: 'assistant',
-          content: _todayOutfitContent,
+          content: _trendyItemsContent,
           products: products,
-          relatedChips: _todayOutfitRelatedChips,
+          relatedChips: _trendyItemsRelatedChips,
         ));
         _isLoading = false;
       });
@@ -372,9 +372,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   static const _guideChips = [
-    '오늘 뭐입지?',
-    '비슷한 스타일 더 보여줘',
     '요즘 유행하는 아이템',
+    '비슷한 스타일 더 보여줘',
     '내 옷장 분석해줘',
   ];
 

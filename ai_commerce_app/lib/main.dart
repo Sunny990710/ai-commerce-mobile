@@ -151,7 +151,11 @@ class _MainScreenState extends State<MainScreen> {
         }),
         onGoToMy: () => setState(() => _currentIndex = 4),
       ),
-      ExploreScreen(onBack: () => setState(() => _currentIndex = 0)),
+      ExploreScreen(
+        onBack: () => setState(() => _currentIndex = 0),
+        wishIds: _wishIds,
+        onToggleWish: _toggleWish,
+      ),
       ChatScreen(
         wishIds: _wishIds,
         onToggleWish: _toggleWish,
